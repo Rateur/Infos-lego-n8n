@@ -1,0 +1,253 @@
+{
+  "name": "LEGO avec IA",
+  "nodes": [
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        912,
+        -240
+      ],
+      "id": "9242b619-c449-433c-871c-72f44678def0",
+      "name": "Wait",
+      "webhookId": "edb3b29c-c929-4553-b27b-df44d92b87d7"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"google/gemma-3-4b-it:free\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify(\n        \"Tu es un expert LEGO. Analyse ces news. \" +\n        \"CONSIGNES : \" +\n        \"1. FILTRE : Supprime tout ce qui n'est pas LEGO (INTERDIT : GTA, Mortal Kombat, etc.). \" +\n        \"2. LANGUE : Traduis tout en FRANÇAIS (titres et résumés). \" +\n        \"3. RECOPIE : Garde le lien (Link) et l'image (Image) pour chaque news LEGO. \" +\n        \"FORMAT JSON : { \\\"news\\\": [ { \\\"title\\\": \\\"...\\\", \\\"summary\\\": \\\"...\\\", \\\"link\\\": \\\"...\\\", \\\"image\\\": \\\"...\\\" } ] } \" +\n        \"\\n\\nNews : \" + $json.context\n      ) }}\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        80,
+        -240
+      ],
+      "id": "40f5778d-a2c5-4b22-a1d4-da2d254787a7",
+      "name": "LLM",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "guvxInuozZUfZgMT",
+          "name": "OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://google.serper.dev/news",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"q\": \"LEGO 2026 sets leaks rumors\",\n  \"gl\": \"us\",\n  \"hl\": \"en\",\n  \"num\": 10,\n  \"tbs\": \"qdr:w\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -336,
+        -240
+      ],
+      "id": "e4cb2715-e679-4754-9f8c-e327c2504be2",
+      "name": "Serper (recherche)",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "1bo3mEZXxSJpCnGj",
+          "name": "Serper"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// On récupère la liste des news trouvées par Serper\nconst newsList = $input.first().json.news;\n\n// On crée un texte qui contient Titre, Lien, Image et Résumé\nconst contextText = newsList.map(n => \n  `📰 Title: ${n.title}\\n🔗 Link: ${n.link}\\n🖼️ Image: ${n.imageUrl}\\n📝 Snippet: ${n.snippet}`\n).join(\"\\n---\\n\");\n\nreturn { json: { context: contextText } };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -128,
+        -240
+      ],
+      "id": "46ff29d9-bf14-4e82-9494-9323695cc1b6",
+      "name": "Mixeur"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://discord.com/api/webhooks/1478752347072233532/UzrsWE1c-CKaBGcU1li6tnt8_-XZZhtf2HRuGJOkJCBwDJln-AKwHsOSXNbttxTexDTF",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"embeds\": [\n    {\n      \"title\": \"{{ $json.title }}\",\n      \"description\": \"{{ $json.summary }}\\n\\n🔗 [Lire l'article complet]({{ $json.link }})\",\n      \"color\": 16711680,\n      \"image\": {\n        \"url\": \"{{ $json.image }}\"\n      },\n      \"footer\": {\n        \"text\": \"Veille LEGO Automatisée\"\n      }\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        704,
+        -240
+      ],
+      "id": "92e6d137-8ecc-4bf2-9536-95585d1c86b1",
+      "name": "Post Discord",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -544,
+        -240
+      ],
+      "id": "f3ed6cb1-59b7-42b9-9161-464e771bc541",
+      "name": "Start"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1e5e92a8-1c7b-48ec-a349-9d6af7a70c4b",
+              "name": "content",
+              "value": "={{ $json.choices[0].message.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        288,
+        -240
+      ],
+      "id": "18bed36a-f60f-4e23-a356-30aeda8c470d",
+      "name": "Extraction"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. On récupère le texte brut de l'étape précédente\nconst raw = $input.first().json.content;\n\n// 2. On nettoie les balises markdown (```json ...)\nconst cleanText = raw.replace(/```json|```/g, \"\").trim();\n\n// 3. On transforme le texte en véritable objet JSON\nconst data = JSON.parse(cleanText);\n\n// 4. SÉCURITÉ LEGO : On filtre pour ne garder que ce qui contient \"LEGO\"\n// (C'est ici qu'on dégage GTA 6 et Mortal Kombat pour de bon !)\nconst onlyLego = data.news.filter(item => \n  item.title.toLowerCase().includes('lego') || \n  item.summary.toLowerCase().includes('lego')\n);\n\nreturn onlyLego;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        496,
+        -240
+      ],
+      "id": "c97682a3-765d-4440-bca9-7f1633bacc08",
+      "name": "Filtre LEGO"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Wait": {
+      "main": [
+        []
+      ]
+    },
+    "Serper (recherche)": {
+      "main": [
+        [
+          {
+            "node": "Mixeur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM": {
+      "main": [
+        [
+          {
+            "node": "Extraction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mixeur": {
+      "main": [
+        [
+          {
+            "node": "LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post Discord": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Serper (recherche)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraction": {
+      "main": [
+        [
+          {
+            "node": "Filtre LEGO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtre LEGO": {
+      "main": [
+        [
+          {
+            "node": "Post Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "75477974-6fd0-4099-8c29-e3898db973ab",
+  "meta": {
+    "instanceId": "fb38f5e12343109432291526abfa7abb53b740ea122894143b4e2432b4846df4"
+  },
+  "id": "YVa57zYr0Ge9PorT",
+  "tags": []
+}

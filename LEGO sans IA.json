@@ -1,0 +1,398 @@
+{
+  "name": "LEGO sans IA",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -432,
+        -224
+      ],
+      "id": "8847ad6b-4549-4025-9c3f-402457b931a1",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://jaysbrickblog.com/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        112
+      ],
+      "id": "e3965e58-eac3-432a-89ec-420e121741c4",
+      "name": "RSS Read4"
+    },
+    {
+      "parameters": {
+        "url": "https://www.hothbricks.com/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        -512
+      ],
+      "id": "0f9b2222-4fe5-479a-85ee-bb7232618774",
+      "name": "Hoth Bricks"
+    },
+    {
+      "parameters": {
+        "url": "https://www.brothers-brick.com/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        -224
+      ],
+      "id": "994b6ef1-ed37-41c5-831f-645be6affdee",
+      "name": "The Brothers Brick"
+    },
+    {
+      "parameters": {
+        "url": "https://brickset.com/feed",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        -368
+      ],
+      "id": "861e7485-9e0c-400b-ac69-ede746c8a8bc",
+      "name": "Brickset"
+    },
+    {
+      "parameters": {
+        "url": "https://www.hellobricks.com/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        -64
+      ],
+      "id": "2f5d8adb-be18-4cc3-88c7-db8d8c0900c2",
+      "name": "Jay's Brick Blog"
+    },
+    {
+      "parameters": {
+        "numberInputs": 5
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        96,
+        -272
+      ],
+      "id": "c83a7ce4-94a0-4a33-b24c-ec46650e5956",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "425a40e6-e6e1-446a-bcac-374bc1000e85",
+              "leftValue": "={{ $json.pubDate }}",
+              "rightValue": "={{ $now.minus({hours: 24}) }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "after"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        256,
+        -224
+      ],
+      "id": "af3195cc-c563-418b-9c73-7e3c5bdb196b",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        -224
+      ],
+      "id": "9500d11b-b3d2-4a06-91f5-56d35c440ab9",
+      "name": "Wait",
+      "webhookId": "56b69aec-8159-4d58-92e6-588101a77347"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://discord.com/api/webhooks/1478708794614878310/AIIYRYbYOE4hH88ZMc2Bd73a_glgYEiH84cg2gua2eUGodkZ7uv5KS5VePZ3VNlrzyaU",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "embeds",
+              "value": "={{ $json.embeds }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        880,
+        -224
+      ],
+      "id": "15c3ea43-1df9-4d8e-a909-01161ec6a1aa",
+      "name": "HTTP Request",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f85b76f9-9fe9-4f68-ba82-2b3bffed9b63",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "bca4b9a3-92e2-49de-b7b7-d29b6642e6d4",
+              "name": "content",
+              "value": "={{ $json.contentSnippet }}",
+              "type": "string"
+            },
+            {
+              "id": "a147571e-2382-40d9-a8ce-6401e675253b",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "86b449c5-85e5-49f2-b225-d5096ad32f86",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "c74713b4-79b4-4ded-a51b-267e765d8562",
+              "name": "imageUrl",
+              "value": "={{ $json[\"content:encoded\"].match(/src=\"([^\"]+)\"/)?.[1] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        -224
+      ],
+      "id": "78c7ed65-b6d8-46d8-8545-b820c4bb7e84",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map(item => ({\n  json: {\n    embeds: [{\n      title: item.json.title ? item.json.title.substring(0, 256) : \"Sans titre\",\n      url: item.json.link,\n      // On utilise le contenu nettoyé par le nœud précédent\n      description: item.json.content ? item.json.content.substring(0, 2048) : \"Pas de description\",\n      color: 16711680, // Rouge LEGO\n      // Ici on ajoute l'image si on l'a trouvée\n      image: item.json.imageUrl ? { url: item.json.imageUrl } : undefined,\n      fields: [\n        { \n          name: \"🕒 Publié le\", \n          value: item.json.pubDate || \"Date inconnue\", \n          inline: true \n        }\n      ],\n      footer: { text: \"Veille LEGO • N8N\" }\n    }]\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        -224
+      ],
+      "id": "5cfbb730-56e1-4c22-a7e4-940d3ce21222",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Hoth Bricks",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Brickset",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "The Brothers Brick",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Jay's Brick Blog",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Jay's Brick Blog": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Hoth Bricks": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Brickset": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "The Brothers Brick": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "RSS Read4": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "cb62136d-fc37-44f7-b804-a34a210a1264",
+  "meta": {
+    "instanceId": "fb38f5e12343109432291526abfa7abb53b740ea122894143b4e2432b4846df4"
+  },
+  "id": "sSVj7mrUIgGQak2W",
+  "tags": []
+}
