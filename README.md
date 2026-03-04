@@ -1,25 +1,25 @@
 <div align="center">
-  <h1>Automatisations n8n : Veille RSS & IA sur Discord</h1>
+
+  <h1 style="margin-bottom: 10px;">Automatisations n8n : Veille RSS & IA sur Discord</h1>
   
-  ![Rejoindre le Discord](https://img.shields.io/badge/Rejoindre_le_Serveur-Discord-7289da?style=for-the-badge&logo=discord)
-  <br>
-  ---
+  <a href="https://discord.gg/tVcBVzBGc3">
+    <img src="https://img.shields.io/badge/Rejoindre_le_Serveur-Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Rejoindre le Discord">
+  </a>
 
-  ![n8n](https://img.shields.io/badge/n8n-FF6D5A?style=for-the-badge&logo=n8n&logoColor=white)
-  ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-  ![Serper](https://img.shields.io/badge/Serper-4285F4?style=for-the-badge&logo=google&logoColor=white)
-  ![OpenRouter](https://img.shields.io/badge/OpenRouter-000000?style=for-the-badge&logo=openai&logoColor=white)
-  ![Discord Webhook](https://img.shields.io/badge/Discord_Webhook-5865F2?style=for-the-badge&logo=discord&logoColor=white)
-  
+  <p style="margin-top: 20px; margin-bottom: 20px;">
+    <img src="https://img.shields.io/badge/n8n-FF6D5A?style=flat-square&logo=n8n&logoColor=white" alt="n8n">
+    <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker">
+    <img src="https://img.shields.io/badge/Serper-4285F4?style=flat-square&logo=google&logoColor=white" alt="Serper">
+    <img src="https://img.shields.io/badge/OpenRouter-000000?style=flat-square&logo=openai&logoColor=white" alt="OpenRouter">
+  </p>
 
-  ---
-
-  <p style="margin: 10px 0 20px; font-weight: 600;">
+  <p style="font-size: 14px;">
     <a href="#présentation">Présentation</a> •
     <a href="#structure-du-dépôt">Structure</a> •
     <a href="#installation">Installation</a> •
     <a href="#aperçu-des-résultats">Aperçus</a>
   </p>
+
 </div>
 
 ---
