@@ -151,7 +151,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://discord.com/api/webhooks/1478708794614878310/AIIYRYbYOE4hH88ZMc2Bd73a_glgYEiH84cg2gua2eUGodkZ7uv5KS5VePZ3VNlrzyaU",
+        "url": "https://discord.com/api/webhooks/VOTRE_ID/VOTRE_JETON",
         "sendBody": true,
         "bodyParameters": {
           "parameters": [
