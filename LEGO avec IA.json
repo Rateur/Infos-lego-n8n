@@ -83,7 +83,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://discord.com/api/webhooks/1478752347072233532/UzrsWE1c-CKaBGcU1li6tnt8_-XZZhtf2HRuGJOkJCBwDJln-AKwHsOSXNbttxTexDTF",
+        "url": "https://discord.com/api/webhooks/VOTRE_ID/VOTRE_JETON",
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={\n  \"embeds\": [\n    {\n      \"title\": \"{{ $json.title }}\",\n      \"description\": \"{{ $json.summary }}\\n\\n🔗 [Lire l'article complet]({{ $json.link }})\",\n      \"color\": 16711680,\n      \"image\": {\n        \"url\": \"{{ $json.image }}\"\n      },\n      \"footer\": {\n        \"text\": \"Veille LEGO Automatisée\"\n      }\n    }\n  ]\n}",
